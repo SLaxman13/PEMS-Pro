@@ -47,7 +47,7 @@ st.markdown(style, unsafe_allow_html=True)
 
 # --- SETTINGS ---
 BOT_TOKEN = "7872128863:AAEmJI6zvwn0sXkKuNjPEPsO_zHI3enG6rQ"
-CHAT_ID = "PASTE_YOUR_CHAT_ID_HERE" 
+CHAT_ID = "7924346653" 
 
 def send_telegram_msg(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHAT_ID}&text={message}"
@@ -93,10 +93,10 @@ def sf(v):
 score, aqi, temp, noise, uv = sf(c["SCORE"]), sf(c["AQI"]), sf(c["TEMP"]), sf(c["DB"]), sf(c["UV"])
 
 # ---------- ALERTS ----------
-if (score >= 90 or aqi >= 200):
+if (score >= 81 or aqi >= 200):
     current_time = time.time()
     if current_time - st.session_state.last_alert_time > 300:
-        send_telegram_msg(f"🚨 ALERT: HIGH EXPOSURE ({int(score)}%)")
+        send_telegram_msg(f"🚨 ALERT: VERY POOR EXPOSURE ({int(score)}%)")
         st.session_state.last_alert_time = current_time
 
 # ---------- DASHBOARD ----------
@@ -113,22 +113,28 @@ c4.metric("☀️ UV Index", f"{uv:.1f}")
 
 st.markdown("<hr style='border: 0.5px solid #EEE;'>", unsafe_allow_html=True)
 
-# ---------- EXPOSURE SCORE ----------
-if score >= 90:
-    color = "#D93025" # Google Red
-    status = "CRITICAL DANGER"
-elif score >= 70:
-    color = "#F9AB00" # Google Yellow/Orange
-    status = "MODERATE RISK"
+# ---------- EXPOSURE SCORE LOGIC (UPDATED RANGES) ----------
+if score <= 20:
+    color = "#188038" # Green
+    status = "GOOD"
+elif score <= 40:
+    color = "#34A853" # Light Green/Satisfactory
+    status = "SATISFACTORY"
+elif score <= 60:
+    color = "#FBBC04" # Yellow/Moderate
+    status = "MODERATE"
+elif score <= 80:
+    color = "#E67E22" # Orange/Poor
+    status = "POOR"
 else:
-    color = "#188038" # Google Green
-    status = "SAFE"
+    color = "#D93025" # Red/Very Poor
+    status = "VERY POOR"
 
 st.markdown(f"<p style='color: #5F6368; font-size: 12px; margin-bottom: 0;'>SYSTEM EXPOSURE SCORE</p>", unsafe_allow_html=True)
 st.markdown(f"<h1 style='color: {color}; font-size: 95px; margin: 0;'>{int(score)}</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='color: {color}; font-weight: bold; letter-spacing: 1px;'>{status}</p>", unsafe_allow_html=True)
 
-# ---------- GRAPH (Matches White background perfectly) ----------
+# ---------- GRAPH ----------
 try:
     now = datetime.now().strftime("%H:%M:%S")
     df_new = pd.DataFrame([[now, score]], columns=["Time", "Score"])
@@ -140,4 +146,4 @@ try:
 except: pass
 
 st.markdown("<br>", unsafe_allow_html=True)
-st.caption("PEMS v2.2 | Research Analytics Data")
+st.caption("PEMS v2.3 | Research Analytics Data")
