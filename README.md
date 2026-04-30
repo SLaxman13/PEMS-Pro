@@ -7,7 +7,6 @@ So, PEMS Pro helps users quickly understand:
 Whether their environment is safe
 When conditions are becoming risky
 When they should take action (like moving to a safer place)
-🔄 Data Flow in PEMS Pro
 The system works in a simple flow from hardware to app.
 First, the ESP32 device collects data from all the sensors. These include air quality, temperature, noise, UV, and motion. It processes this data and calculates the exposure score in real time.
 Then, the ESP32 sends all this data to the ThingSpeak cloud using WiFi. This happens continuously, so the latest data is always available online.
